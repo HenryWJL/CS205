@@ -383,19 +383,20 @@ string* calculator(string* num1_,string* num2_){
     while(result0[num1.size()+num2.size()-1-i]==0&&i<=num1.size()+num2.size()-1){
         i++;
     }
-    if(i==num1.size()+num2.size()-1){
-        result="0";
+    if(i==num1.size()+num2.size()){
+        finalResult[0]="0";
+        finalResult[1]="0";
     }
     else{
         for(int j=num1.size()+num2.size()-1-i;j>=0;j--){
             result+=(result0[j]+'0');
         }
+        stringstream ss;
+        ss<<(decimal1+decimal2);
+        ss>>decimal;
+        finalResult[0]=result;
+        finalResult[1]=decimal;
     }   
-    stringstream ss;
-    ss<<(decimal1+decimal2);
-    ss>>decimal;
-    finalResult[0]=result;
-    finalResult[1]=decimal;
     return finalResult;
     
 }
