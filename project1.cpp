@@ -378,17 +378,19 @@ string* calculator(string* num1_,string* num2_){
     }
     
     
-    //防止result0最后一位为0导致reverse后结果开头为0
-    if(result0[num1.size()+num2.size()-1]==0){     
-        for(int i=num1.size()+num2.size()-2;i>=0;i--){
-            result+=(result0[i]+'0');
-        }
+    //防止result0最后几位为0导致reverse后结果开头为0
+    int i=0;
+    while(result0[num1.size()+num2.size()-1-i]==0&&i<=num1.size()+num2.size()-1){
+        i++;
+    }
+    if(i=num1.size()+num2.size()-1){
+        result="0";
     }
     else{
-        for(int i=num1.size()+num2.size()-1;i>=0;i--){
+        for(int j=num1.size()+num2.size()-1-i;j>=0;j--){
             result+=(result0[i]+'0');
         }
-    }
+    }   
     stringstream ss;
     ss<<(decimal1+decimal2);
     ss>>decimal;
