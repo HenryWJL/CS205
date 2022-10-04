@@ -383,12 +383,12 @@ string* calculator(string* num1_,string* num2_){
     while(result0[num1.size()+num2.size()-1-i]==0&&i<=num1.size()+num2.size()-1){
         i++;
     }
-    if(i=num1.size()+num2.size()-1){
+    if(i==num1.size()+num2.size()-1){
         result="0";
     }
     else{
         for(int j=num1.size()+num2.size()-1-i;j>=0;j--){
-            result+=(result0[i]+'0');
+            result+=(result0[j]+'0');
         }
     }   
     stringstream ss;
