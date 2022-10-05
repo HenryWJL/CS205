@@ -119,8 +119,13 @@ string* handler2(string str){                      //处理科学计数法
     string decimal=str.substr(dotPlace+1,ePlace-dotPlace-1);//小数部分
     
     string power0=str.substr(ePlace+1,str.size()-ePlace);
-
-    int power=atoi(power0.c_str());                //幂
+    int power=0;
+    if(power0[0]=='_'){                                 
+        power=0-atoi(power0.substr(1).c_str()); 
+    }                                                     //幂
+    else{
+        power=atoi(power0.c_str());
+    }   
 
     if(str.find('.')==string::npos){               //e前为整数
         integer=str.substr(0,ePlace);
