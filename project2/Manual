@@ -1,0 +1,14 @@
+Please read the following guidelines before using the calculator.
+
+1.You can input any expression containing numbers, operators, brackets and math functions.
+2.Allowed numbers: integers, floating-point numbers, numbers written in scientific notation.
+3.Allowed operators: +, -, *, /, =.
+4.Allowed brackets: (), [].
+5.Allowed math functions: max{}, min{}, pow{}.
+6.Precedence: []>(),math functions>*,/>+,-.
+7.Negative numbers are expressed as '_N', where 'N' is any positive number.
+8.'()' can only be nested in '[]'.
+9.Negative numbers don't need '()' to enclose them.
+10.The arguments in the math functions can only be numbers.
+11.If you input an invalid expression, the calculator may not warn you (sometimes it would),
+so please pay attention to the validity of your input.
