@@ -468,7 +468,10 @@ string* divide(string str1,string str2,int decimal1,int decimal2){
             remainder+="0";
             i++;
         }
-        decimal+=i;
+        for(int j=0;j<3;j++){       //保留几位小数（目前是四位）
+            remainder+="0";
+        }    
+        decimal+=(i+3);
     }
     else{
         decimal+=1;
