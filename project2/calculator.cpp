@@ -183,10 +183,14 @@ string* subtract(string num1,string num2,int decimal1,int decimal2){
                 outcome[i]=n1+10-n2;
                 i--;
                 while((num1[i]-'0')<=(num2[i]-'0')){
+                    n1=num1[i]-'0';
+                    n2=num2[i]-'0';
                     outcome[i]=n1+9-n2;
                     i--;
                 }
-                outcome[i]=num1[i]-num2[i]-1;
+                n1=num1[i]-'0';
+                n2=num2[i]-'0';
+                outcome[i]=n1-n2-1;
             }
             else{
                 outcome[i]=n1-n2;
@@ -220,10 +224,14 @@ string* subtract(string num1,string num2,int decimal1,int decimal2){
                 outcome[i]=n2+10-n1;
                 i--;
                 while((num2[i]-'0')<=(num1[i]-'0')){
+                    n1=num1[i]-'0';
+                    n2=num2[i]-'0';
                     outcome[i]=n2+9-n1;
                     i--;
                 }
-                outcome[i]=num2[i]-num1[i]-1;
+                n1=num1[i]-'0';
+                n2=num2[i]-'0';
+                outcome[i]=n2-n1-1;
             }
             else{
                 outcome[i]=n2-n1;
@@ -269,10 +277,14 @@ string* subtract(string num1,string num2,int decimal1,int decimal2){
                     outcome[i]=n1+10-n2;
                     i--;
                     while((num1[i]-'0')<=(num2[i]-'0')){
+                        n1=num1[i]-'0';
+                        n2=num2[i]-'0';
                         outcome[i]=n1+9-n2;
                         i--;
                     }
-                    outcome[i]=num1[i]-num2[i]-1;
+                    n1=num1[i]-'0';
+                    n2=num2[i]-'0';
+                    outcome[i]=n1-n2-1;
                 }
                 else{
                     outcome[i]=n1-n2;
@@ -301,10 +313,14 @@ string* subtract(string num1,string num2,int decimal1,int decimal2){
                     outcome[i]=n2+10-n1;
                     i--;
                     while((num2[i]-'0')<=(num1[i]-'0')){
+                        n1=num1[i]-'0';
+                        n2=num2[i]-'0';
                         outcome[i]=n2+9-n1;
                         i--;
                     }
-                    outcome[i]=num2[i]-num1[i]-1;
+                    n1=num1[i]-'0';
+                    n2=num2[i]-'0';
+                    outcome[i]=n2-n1-1;
                 }
                 else{
                     outcome[i]=n2-n1;
@@ -426,25 +442,6 @@ bool isNotSmaller(string str1,string str2,int decimal1,int decimal2){      //判
     else{
         return str1.size()-decimal1>str2.size()-decimal2?true:false;
     }
-    // if(str1.size()>str2.size()){
-    //     return true;
-    // }
-    // else if(str1.size()<str2.size()){
-    //     return false;
-    // }
-    // else{
-    //     for(int i=0;i<str1.size();i++){
-    //         if((str1[i]-'0')>(str2[i]-'0')){
-    //             return true;
-    //             break;
-    //         }
-    //         else if((str1[i]-'0')<(str2[i]-'0')){
-    //             return false;
-    //             break;
-    //         }
-    //     }
-    //     return true;
-    // }
 }
 
 
@@ -468,9 +465,9 @@ string* divide(string str1,string str2,int decimal1,int decimal2){
             remainder+="0";
             i++;
         }
-        for(int j=0;j<3;j++){       //保留几位小数（目前是四位）
+        for(int j=0;j<3;j++){    //保留几位小数(目前是四位)
             remainder+="0";
-        }    
+        }
         decimal+=(i+3);
     }
     else{
@@ -536,7 +533,10 @@ string* max(string str1,string str2,int decimal1,int decimal2){
 }
 
 string* min(string str1,string str2,int decimal1,int decimal2){
-    return max(str2,str1,decimal2,decimal1);
+    string * str=new string[2];
+    str[0]=max(str1,str2,decimal1,decimal2)[0].compare(str1)==0?str2:str1;
+    str[1]=max(str1,str2,decimal1,decimal2)[0].compare(str1)==0?decimal2:decimal1;
+    return str;
 }
 
 string* pow(string str1,string power,int decimal1,int decimal2){
