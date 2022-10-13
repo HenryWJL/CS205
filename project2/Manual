@@ -4,14 +4,15 @@ Please read the following guidelines before using the calculator.
 2.Allowed numbers: integers, floating-point numbers, numbers written in scientific notation.
 3.Allowed operators: +, -, *, /, =.
 4.Allowed brackets: (), [].
-5.Allowed math functions: max{}, min{}, pow{}.
-6.Precedence: []>(),math functions>*,/>+,-.
+5.Allowed math functions: max{}, min{}, pow{}, abs{}.
+6.Precedence: [] > math functions > () > *,/ > +,-.
 7.Negative numbers are expressed as '_N', where 'N' is any positive number.
 8.'()' can only be nested in '[]'.
 9.Negative numbers don't need '()' to enclose them.
 10.The arguments in the math functions can only be numbers.
 11.The power of a number can only be integer.
-12.If you input an invalid expression, the calculator may not warn you (sometimes it would),
-so please pay attention to the validity of your input.
+12.If your input expression contains any invalid values among operators, the calculator will
+warn you; but if the operators or math functions in your expression are wrong, the calculator 
+will not warn you, so please pay attention to the validity of your input expression.
 13.You'd better not use 'm', 'a', 'x', 'i', 'n', 'p', 'o', 'w', 'e' as the names of variables
 when your expression contains some math functions and numbers written in scientific notation.
