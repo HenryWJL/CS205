@@ -187,22 +187,25 @@ string* handler2(string str){                      //处理科学计数法
     }
     else{                                          //e前为浮点数
         if(power>=decimal.size()&&power>=0){
-            result=integer+decimal;
+            if(integer.compare("0")==0){
+                result=decimal;
+            }
+            else{
+                result=integer+decimal;
+            }
             for(int i=0;i<(power-decimal.size());i++){
                 result+='0';
             }
             return handler1(result);
         }
         else if(power<decimal.size()&&power>=0){
-            result=integer;
+            result=integer+decimal;
+            result=result.insert(dotPlace+power,".");
             int i=0;
-            for(;i<power;i++){
-                result+=decimal[i];
+            while(result[i]=='0'&&i<result.find('.')-1){
+                i++;
             }
-            result+='.';
-            for(;i<decimal.size();i++){
-                result+=decimal[i];
-            }
+            result=result.substr(i);
             return handler1(result);
         }
         else{           
