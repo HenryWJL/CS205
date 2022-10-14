@@ -11,8 +11,10 @@ Please read the following guidelines before using the calculator.
 9.Negative numbers don't need '()' to enclose them.
 10.The arguments in the math functions can only be numbers.
 11.The power of a number can only be integer.
-12.If your input expression contains any invalid values among operators, the calculator will
+12.When you use sqrt{n}, you are recommended to input an "n" smaller than 50. Otherwise, it 
+will take you quite a long time to get the result.
+13.If your input expression contains any invalid values among operators, the calculator will
 warn you; but if the operators or math functions in your expression are wrong, the calculator 
-will not warn you, so please pay attention to the validity of your input expression.
-13.You'd better not use 'm', 'a', 'x', 'i', 'n', 'p', 'o', 'w', 'e' as the names of variables
-when your expression contains some math functions and numbers written in scientific notation.
+will not warn you. So please pay attention to the validity of your input expression.
+14.You'd better not use letters in the alphabet as the names of variables when your expression
+contains some math functions and numbers written in scientific notation.
