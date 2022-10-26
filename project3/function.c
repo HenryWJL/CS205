@@ -36,7 +36,6 @@ char * substr(const char * const string,int pos,int len)
 
 struct Matrix createMatrix(const char * matrixString)
 {
-    float * mpointer=(float *)malloc(4);
     int isValid=1;
     if(matrixIsValid(matrixString)==0)
     {
@@ -48,15 +47,88 @@ struct Matrix createMatrix(const char * matrixString)
     {
         if(matrixString[1]=='[')     //二维矩阵
         {
-            struct Matrix result={0,0,NULL};
-            return result;
+            int row=1;
+            int column=1;
+            //确定行数和列数
+            for(int pos=2;pos<strlen(matrixString)-2;pos++)
+            {
+                if(matrixString[pos]==']')
+                {
+                    row++;
+                }
+            }
+            for(int pos=2;pos<strlen(matrixString)-2;pos++)
+            {
+                if(matrixString[pos]==',')
+                {
+                    column++;
+                }
+                if(matrixString[pos]==']')
+                {
+                    break;
+                }
+            }
+            float * mpointer=(float *)malloc(4*row*column);
+            //提取
+            int splace=2,pos=2,mplace=0;
+            for(;splace<strlen(matrixString);splace++)
+            {
+                if(matrixString[splace]!=','&&matrixString[splace]!=']')
+                {
+                    if(valueIsValid(matrixString[splace])==0)
+                    {
+                        isValid=0;
+                        break;
+                    }
+                }
+                else
+                {
+                    mpointer[mplace]=atof(substr(matrixString,pos,splace-pos));
+                    pos=splace+1;
+                    mplace++;
+                    //是否在每行的最后（除最后一行）
+                    if(matrixString[splace]==']'&&matrixString[splace+1]!=']')
+                    {
+                        splace=splace+3;
+                        pos=splace;
+                        continue;
+                    }
+                    //是否在最后一行的最后
+                    else if(matrixString[splace]==']'&&matrixString[splace+1]==']')
+                    {
+                        break;
+                    }
+                }
+            }
+            if(isValid==1)
+            {
+                struct Matrix result={row,column,mpointer};
+                return result;
+            }
+            else
+            {
+                printf("Unable to create matrix because of invalid input!\n");
+                struct Matrix result={0,0,NULL};
+                return result;
+            }
+            free(mpointer);
         }
         else                         //一维向量
         {
-            int splace=1,pos=1,mplace=0;
-            for(;splace<strlen(matrixString)-1;splace++)
+            int column=1;
+            //确定列数
+            for(int pos=1;pos<strlen(matrixString)-1;pos++)
             {
-                if(matrixString[splace]!=',')
+                if(matrixString[pos]==',')
+                {
+                    column++;
+                }
+            }
+            float * mpointer=(float *)malloc(4*column);
+            int splace=1,pos=1,mplace=0;
+            for(;splace<strlen(matrixString);splace++)
+            {
+                if(matrixString[splace]!=','&&matrixString[splace]!=']')
                 {
                     if(valueIsValid(matrixString[splace])==0)
                     {
@@ -71,10 +143,9 @@ struct Matrix createMatrix(const char * matrixString)
                     mplace++;
                 }
             }
-            mpointer[mplace]=atof(substr(matrixString,pos,splace-pos));
             if(isValid==1)
             {
-                struct Matrix result={1,mplace+1,mpointer};
+                struct Matrix result={1,column,mpointer};
                 return result;
             }
             else
@@ -200,7 +271,7 @@ struct Matrix addMatrix(struct Matrix matrix1,struct Matrix matrix2)
         {
             int row=matrix1.row;
             int col=matrix1.column;
-            float * mpointer=(float *)malloc(4);
+            float * mpointer=(float *)malloc(4*row*col);
             for(int pos=0;pos<row*col;pos++)
             {
                 mpointer[pos]=matrix1.content[pos]+matrix2.content[pos];
@@ -215,6 +286,107 @@ struct Matrix addMatrix(struct Matrix matrix1,struct Matrix matrix2)
             struct Matrix result={0,0,NULL};
             return result;
         }
+    }
+}
+
+struct Matrix subtractMatrix(struct Matrix matrix1,struct Matrix matrix2)
+{
+    if(matrix1.content==NULL||matrix2.content==NULL)
+    {
+        printf("The matrix you subtract doesn't exist!\n");
+        struct Matrix result={0,0,NULL};
+        return result;
+    }
+    else
+    {
+        if(matrix1.row==matrix2.row&&matrix1.column==matrix2.column)
+        {
+            int row=matrix1.row;
+            int col=matrix1.column;
+            float * mpointer=(float *)malloc(4*row*col);
+            for(int pos=0;pos<row*col;pos++)
+            {
+                mpointer[pos]=matrix1.content[pos]-matrix2.content[pos];
+            }
+            struct Matrix result={row,col,mpointer};
+            return result;
+            free(mpointer);
+        }
+        else
+        {
+            printf("Two matrices have different sizes, hence can not be subtracted!\n");
+            struct Matrix result={0,0,NULL};
+            return result;
+        }
+    }
+}
+
+struct Matrix addScalar(struct Matrix matrix,float scalar)
+{
+    if(matrix.content==NULL)
+    {
+        printf("The matrix doesn't exist!\n");
+        struct Matrix result={0,0,NULL};
+        return result;
+    }
+    else
+    {
+        int row=matrix.row;
+        int col=matrix.column;
+        float * mpointer=(float *)malloc(4*row*col);
+        for(int pos=0;pos<row*col;pos++)
+        {
+            mpointer[pos]=matrix.content[pos]+scalar;
+        }
+        struct Matrix result={row,col,mpointer};
+        return result;
+        free(mpointer);
+    }
+}
+
+struct Matrix subtractScalar(struct Matrix matrix,float scalar)
+{
+    if(matrix.content==NULL)
+    {
+        printf("The matrix doesn't exist!\n");
+        struct Matrix result={0,0,NULL};
+        return result;
+    }
+    else
+    {
+        int row=matrix.row;
+        int col=matrix.column;
+        float * mpointer=(float *)malloc(4*row*col);
+        for(int pos=0;pos<row*col;pos++)
+        {
+            mpointer[pos]=matrix.content[pos]-scalar;
+        }
+        struct Matrix result={row,col,mpointer};
+        return result;
+        free(mpointer);
+    }
+}
+
+struct Matrix multiplyScalar(struct Matrix matrix,float scalar)
+{
+    if(matrix.content==NULL)
+    {
+        printf("The matrix doesn't exist!\n");
+        struct Matrix result={0,0,NULL};
+        return result;
+    }
+    else
+    {
+        int row=matrix.row;
+        int col=matrix.column;
+        float * mpointer=(float *)malloc(4*row*col);
+        for(int pos=0;pos<row*col;pos++)
+        {
+            mpointer[pos]=matrix.content[pos]*scalar;
+        }
+        struct Matrix result={row,col,mpointer};
+        return result;
+        free(mpointer);
     }
 }
 
