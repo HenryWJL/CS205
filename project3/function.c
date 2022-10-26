@@ -10,7 +10,7 @@ int matrixIsValid(const char * matrixString)
 } 
 int valueIsValid(char c)
 {
-    if((c>='0'&&c<='9')||c=='.')
+    if((c>='0'&&c<='9')||c=='.'||c=='-')
     {
         return 1;
     }
@@ -89,7 +89,7 @@ struct Matrix createMatrix(const char * matrixString)
                     //是否在每行的最后（除最后一行）
                     if(matrixString[splace]==']'&&matrixString[splace+1]!=']')
                     {
-                        splace=splace+3;
+                        splace+=3;
                         pos=splace;
                         continue;
                     }
@@ -159,39 +159,69 @@ struct Matrix createMatrix(const char * matrixString)
     }
 }
 
-// struct Matrix createMatrix(int row,int column)
-// {
-//     float * marray=(float *)malloc(4);
-//     int isValid=1;
-//     for(int rownum=0;rownum<row;rownum++)
-//     {
-//         printf("Please input row No.%d: ",rownum+1);
-//         for(int colnum=0;colnum<column;colnum++){
-//             float value;
-//             int state=scanf("%f",&value);
-//             if(state==1)
-//             {
-//                 marray[rownum+colnum]=value;
-//             }
-//             else
-//             {
-//                 isValid=0;
-//             }
-//         }
-//     }
-//     if(isValid==0)
-//     {
-//         printf("Invalid");
-//         struct Matrix matrix={0,0,NULL};
-//         return matrix;
-//     }
-//     else
-//     {
-//         struct Matrix matrix={row,column,marray};
-//         return matrix;
-//         free(marray);
-//     }
-// }
+struct Matrix createZeros(int row,int column)
+{
+    if(row>0&&column>0)
+    {
+        float * mpointer=(float *)malloc(4*row*column);
+        for(int pos=0;pos<row*column;pos++)
+        {
+            mpointer[pos]=0;
+        }
+        struct Matrix result={row,column,mpointer};
+        return result;
+        free(mpointer);
+    }
+    else
+    {
+        printf("Can not create a matrix with such row and column!");
+        struct Matrix result={0,0,NULL};
+        return result;
+    }
+}
+
+struct Matrix createOnes(int row,int column)
+{
+    if(row>0&&column>0)
+    {
+        float * mpointer=(float *)malloc(4*row*column);
+        for(int pos=0;pos<row*column;pos++)
+        {
+            mpointer[pos]=1;
+        }
+        struct Matrix result={row,column,mpointer};
+        return result;
+        free(mpointer);
+    }
+    else
+    {
+        printf("Can not create a matrix with such row and column!");
+        struct Matrix result={0,0,NULL};
+        return result;
+    }
+}
+
+struct Matrix createRand(int row,int column,int range)
+{
+    if(row>0&&column>0)
+    {
+        float * mpointer=(float *)malloc(4*row*column);
+        srand(time(0));
+        for(int pos=0;pos<row*column;pos++)
+        {
+            mpointer[pos]=(float)(rand()%(range+1));
+        }
+        struct Matrix result={row,column,mpointer};
+        return result;
+        free(mpointer);
+    }
+    else
+    {
+        printf("Can not create a matrix with such row and column!");
+        struct Matrix result={0,0,NULL};
+        return result;
+    }
+}
 
 void deleteMatrix(struct Matrix * mpointer)
 {
@@ -321,6 +351,47 @@ struct Matrix subtractMatrix(struct Matrix matrix1,struct Matrix matrix2)
     }
 }
 
+struct Matrix multiplyMatrix(struct Matrix matrix1,struct Matrix matrix2)
+{
+    if(matrix1.content==NULL||matrix2.content==NULL)
+    {
+        printf("The matrix you multiply doesn't exist!\n");
+        struct Matrix result={0,0,NULL};
+        return result;
+    }
+    else
+    {
+        if(matrix1.column==matrix2.row)
+        {
+            int row=matrix1.row;
+            int col=matrix2.column;
+            float * mpointer=(float *)malloc(4*row*col);
+            int pos=0;
+            for(int rowpos=0;rowpos<matrix1.row;rowpos++)
+            {
+                for(int colpos1=0;colpos1<matrix2.column;colpos1++,pos++)
+                {
+                    float value=0;
+                    for(int colpos2=0;colpos2<matrix1.column;colpos2++)
+                    {
+                        value+=(matrix1.content[rowpos*matrix1.column+colpos2]*matrix2.content[colpos1+colpos2*matrix2.column]);
+                    }
+                    mpointer[pos]=value;
+                }
+            }
+            struct Matrix result={row,col,mpointer};
+            return result;
+            free(mpointer);
+        }
+        else
+        {
+            printf("The column of the former one is not equal to the latter one, hence can not be multiplied!\n");
+            struct Matrix result={0,0,NULL};
+            return result;
+        }
+    }
+}
+
 struct Matrix addScalar(struct Matrix matrix,float scalar)
 {
     if(matrix.content==NULL)
@@ -390,22 +461,73 @@ struct Matrix multiplyScalar(struct Matrix matrix,float scalar)
     }
 }
 
-float maxValue(struct Matrix matrix)
+float max(struct Matrix matrix)
 {
-    float max=-9999999;
-    for(int pos=0;pos<matrix.row*matrix.column;pos++)
+    if(matrix.content==NULL)
     {
-        max=matrix.content[pos]>max?matrix.content[pos]:max;
+        printf("The matrix doesn't exist!\n");
+        return 0;
     }
-    return max;
+    else
+    {
+        float max=-9999999;
+        for(int pos=0;pos<matrix.row*matrix.column;pos++)
+        {
+            max=matrix.content[pos]>max?matrix.content[pos]:max;
+        }
+        return max;
+    }
 }
-float minValue(struct Matrix matrix)
+float min(struct Matrix matrix)
 {
-    float min=9999999;
-    for(int pos=0;pos<matrix.row*matrix.column;pos++)
+    if(matrix.content==NULL)
     {
-        min=matrix.content[pos]<min?matrix.content[pos]:min;
+        printf("The matrix doesn't exist!\n");
+        return 0;
     }
-    return min;
+    else
+    {
+        float min=9999999;
+        for(int pos=0;pos<matrix.row*matrix.column;pos++)
+        {
+            min=matrix.content[pos]<min?matrix.content[pos]:min;
+        }
+        return min;
+    }
 }
 
+float mean(struct Matrix matrix)
+{
+    if(matrix.content==NULL)
+    {
+        printf("The matrix doesn't exist!\n");
+        return 0;
+    }
+    else
+    {
+        float total=0;
+        for(int pos=0;pos<matrix.row*matrix.column;pos++)
+        {
+            total+=matrix.content[pos];
+        }
+        return total/(matrix.row*matrix.column);
+    }
+}
+
+float sum(struct Matrix matrix)
+{
+    if(matrix.content==NULL)
+    {
+        printf("The matrix doesn't exist!\n");
+        return 0;
+    }
+    else
+    {
+        float total=0;
+        for(int pos=0;pos<matrix.row*matrix.column;pos++)
+        {
+            total+=matrix.content[pos];
+        }
+        return total;
+    }
+}
