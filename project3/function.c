@@ -546,7 +546,7 @@ float max(struct Matrix matrix)
     }
     else
     {
-        float max=-9999999;
+        float max=-9999999.0f;
         for(int pos=0;pos<matrix.row*matrix.column;pos++)
         {
             max=matrix.content[pos]>max?matrix.content[pos]:max;
@@ -563,7 +563,7 @@ float min(struct Matrix matrix)
     }
     else
     {
-        float min=9999999;
+        float min=9999999.0f;
         for(int pos=0;pos<matrix.row*matrix.column;pos++)
         {
             min=matrix.content[pos]<min?matrix.content[pos]:min;
@@ -581,7 +581,7 @@ float mean(struct Matrix matrix)
     }
     else
     {
-        float total=0;
+        float total=0.0f;
         for(int pos=0;pos<matrix.row*matrix.column;pos++)
         {
             total+=matrix.content[pos];
@@ -599,7 +599,7 @@ float sum(struct Matrix matrix)
     }
     else
     {
-        float total=0;
+        float total=0.0f;
         for(int pos=0;pos<matrix.row*matrix.column;pos++)
         {
             total+=matrix.content[pos];
