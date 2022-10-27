@@ -6,7 +6,63 @@
 
 int matrixIsValid(const char * matrixString)
 {
-    return 1;
+    int cnt1=0;   //存储'['的个数
+    int cnt2=0;   //存储']'的个数
+    int cnt3=1;   //存储','的个数
+    int col=1;    //存储列数
+    int isValid=1;
+    for(int pos=0;pos<strlen(matrixString);pos++)
+    {
+        if(matrixString[pos]=='[')
+        {
+            cnt1++;
+        }
+        else if(matrixString[pos]==']')
+        {
+            cnt2++;
+        }
+    }
+    //确定列数
+    for(int pos=0;pos<strlen(matrixString);pos++)
+    {
+        if(matrixString[pos]==',')
+        {
+            col++;
+        }
+        if(matrixString[pos]==']')
+        {
+            break;
+        }
+    }
+    //检测每行元素个数是否相等
+    for(int pos=0;pos<strlen(matrixString);pos++)
+    {
+        if(matrixString[pos]==',')
+        {
+            cnt3++;
+        }
+        else if(matrixString[pos]==']')
+        {
+            if(cnt3!=col)
+            {
+                isValid=0;
+                break;
+            }
+            else
+            {
+                cnt3=1;
+                pos+=2;
+            }
+        }
+    }
+    if(cnt1!=cnt2||isValid==0)   //两种invalid情况：1.'['或']'缺失；2.每行元素的个数不相等
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
 } 
 int valueIsValid(char c)
 {
@@ -284,6 +340,26 @@ void copyMatrix(struct Matrix * mpointer,const struct Matrix templateMatrix)
         mpointer->row=templateMatrix.row;
         mpointer->column=templateMatrix.column;
         mpointer->content=templateMatrix.content;
+    }
+}
+
+void reshapeMatrix(struct Matrix * mpointer,int row,int column)
+{
+    if(mpointer->content==NULL)
+    {
+        printf("The matrix you reshape doesn't exist!\n");
+    }
+    else
+    {
+        if(row*column==(mpointer->row)*(mpointer->column))
+        {
+            mpointer->row=row;
+            mpointer->column=column;
+        }
+        else
+        {
+            printf("Can not reshape the matrix with such a row and column!\n");
+        }
     }
 }
 
