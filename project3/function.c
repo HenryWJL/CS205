@@ -351,7 +351,7 @@ void reshapeMatrix(struct Matrix * mpointer,int row,int column)
     }
     else
     {
-        if(row*column==(mpointer->row)*(mpointer->column))
+        if(row*column==(mpointer->row)*(mpointer->column)&&row>0&&column>0)
         {
             mpointer->row=row;
             mpointer->column=column;
