@@ -15,8 +15,8 @@ struct Matrix
     long long column;
     float * content;
 };
-int matrixIsValid(const char * matrixString);                                                    //检测输入格式
-int valueIsValid(char c);                                                                        //检测输入元素值
+bool matrixIsValid(const char * matrixString);                                                   //检测输入格式
+bool valueIsValid(char c);                                                                       //检测输入元素值
 char * substr(const char * const string,int pos,int len);                                        //截取字符串
 struct Matrix * createMatrix(const char * matrixString);                                         //用输入的字符串创建矩阵
 struct Matrix * createZeros(long long row,long long column);                                     //创建一个元素全为0的矩阵
