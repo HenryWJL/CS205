@@ -474,6 +474,8 @@ struct Matrix * transposeMatrix(const struct Matrix * matrix)
     }
     long long row=matrix->column;
     long long col=matrix->row;
+    mpointer->row=row;
+    mpointer->column=col;
     mpointer->content=(float *)malloc(4*row*col);
     if(mpointer->content==NULL)
     {
@@ -527,6 +529,8 @@ struct Matrix * addMatrix(const struct Matrix * matrix1,const struct Matrix * ma
     }
     long long row=matrix1->row;
     long long col=matrix1->column;
+    mpointer->row=row;
+    mpointer->column=col;
     mpointer->content=(float *)malloc(4*row*col);
     if(mpointer->content==NULL)
     {
@@ -577,6 +581,8 @@ struct Matrix * subtractMatrix(const struct Matrix * matrix1,const struct Matrix
     }
     long long row=matrix1->row;
     long long col=matrix1->column;
+    mpointer->row=row;
+    mpointer->column=col;
     mpointer->content=(float *)malloc(4*row*col);
     if(mpointer->content==NULL)
     {
@@ -625,9 +631,9 @@ struct Matrix * matmul_plain(const struct Matrix * matrix1,const struct Matrix *
         fprintf(stderr,"Failed to allocate memory for the matrix!\n");
         return NULL;
     }
-    long long row=matrix1->row;
-    long long col=matrix2->column;
-    mpointer->content=(float *)malloc(4*row*col);
+    mpointer->row=matrix1->row;
+    mpointer->column=matrix2->column;
+    mpointer->content=(float *)malloc(4*mpointer->row*mpointer->column);
     if(mpointer->content==NULL)
     {
         fprintf(stderr,"Failed to allocate memory for the matrix's content!\n");
@@ -689,9 +695,9 @@ struct Matrix * matmul_improved(const struct Matrix * matrix1,const struct Matri
         fprintf(stderr,"Failed to allocate memory for the matrix!\n");
         return NULL;
     }
-    long long row=matrix1->row;
-    long long col=matrix2->column;
-    mpointer->content=(float *)malloc(4*row*col);
+    mpointer->row=matrix1->row;
+    mpointer->column=matrix2->column;
+    mpointer->content=(float *)malloc(4*mpointer->row*mpointer->column);
     if(mpointer->content==NULL)
     {
         fprintf(stderr,"Failed to allocate memory for the matrix's content!\n");
@@ -764,9 +770,9 @@ struct Matrix * matmul_improved_2(const struct Matrix * matrix1,const struct Mat
         fprintf(stderr,"Failed to allocate memory for the matrix!\n");
         return NULL;
     }
-    long long row=matrix1->row;
-    long long col=matrix2->column;
-    mpointer->content=(float *)malloc(4*row*col);
+    mpointer->row=matrix1->row;
+    mpointer->column=matrix2->column;
+    mpointer->content=(float *)malloc(4*mpointer->row*mpointer->column);
     if(mpointer->content==NULL)
     {
         fprintf(stderr,"Failed to allocate memory for the matrix's content!\n");
@@ -823,6 +829,8 @@ struct Matrix * addScalar(const struct Matrix * matrix,float scalar)
     }
     long long row=matrix->row;
     long long col=matrix->column;
+    mpointer->row=row;
+    mpointer->column=col;
     mpointer->content=(float *)malloc(4*row*col);
     if(mpointer->content==NULL)
     {
@@ -858,6 +866,8 @@ struct Matrix * subtractScalar(const struct Matrix * matrix,float scalar)
     }
     long long row=matrix->row;
     long long col=matrix->column;
+    mpointer->row=row;
+    mpointer->column=col;
     mpointer->content=(float *)malloc(4*row*col);
     if(mpointer->content==NULL)
     {
@@ -893,6 +903,8 @@ struct Matrix * multiplyScalar(const struct Matrix * matrix,float scalar)
     }
     long long row=matrix->row;
     long long col=matrix->column;
+    mpointer->row=row;
+    mpointer->column=col;
     mpointer->content=(float *)malloc(4*row*col);
     if(mpointer->content==NULL)
     {
@@ -985,5 +997,7 @@ float sum(const struct Matrix * matrix)
     }
     return total;
 }
+
+
 
 
