@@ -54,8 +54,6 @@ public:
     {
         delete [] this->data;
     }
-    
-    bool printMatrix();
 
     Mat& operator=(const Mat& mat) 
     {
@@ -80,49 +78,212 @@ public:
         return *this;
     }
 
-    // Mat * operator+(const Mat & mat)
-    // {
-    //     Mat * matptr=new Mat[sizeof(Mat)];
-    //     if(matptr==NULL)
-    //     {
-    //         cerr<<"Failed to allocate memory for the matrix pointer!"<<endl;
-    //         return NULL;
-    //     }
-    //     if(this->data==NULL||mat.data==NULL)
-    //     {
-    //         cerr<<"The data of the matrix is empty!"<<endl;
-    //         return NULL;
-    //     }
-    //     if(this->row!=mat.row)
-    //     {
-    //         cerr<<"Invalid row!"<<endl;
-    //         return NULL;
-    //     }
-    //     if(this->column!=mat.column)
-    //     {
-    //         cerr<<"Invalid column!"<<endl;
-    //         return NULL;
-    //     }
-    //     if(this->channel!=mat.channel)
-    //     {
-    //         cerr<<"Invalid channel!"<<endl;
-    //         return NULL;
-    //     }
-    //     matptr->row=this->row;
-    //     matptr->column=this->column;
-    //     matptr->channel=this->channel;
-    //     matptr->data=new T[sizeof(T)*mat.row*mat.column*mat.channel];
-    //     if(matptr->data==NULL)
-    //     {
-    //         cerr<<"Failed to allocate memory for the matrix data!"<<endl;
-    //         return NULL;
-    //     }
-    //     for(size_t idx=0;idx<this->row*this->column*this->channel;idx++)
-    //     {
-    //         matptr->data[idx]=this->data[idx]+mat.data[idx];
-    //     }
-    //     return matptr;
-    // }
+    T operator()(size_t rowidx,size_t colidx,size_t chanidx)
+    {
+        if(this->data==NULL)
+        {
+            cerr<<"The data of matrix is empty!"<<endl;
+            return 0;
+        }
+        if(rowidx>this->row)
+        {
+            cerr<<"The row idx is out of bound!"<<endl;
+            return 0;
+        }
+        if(colidx>this->column)
+        {
+            cerr<<"The column idx is out of bound!"<<endl;
+            return 0;
+        }
+        if(chanidx>this->channel)
+        {
+            cerr<<"The channel idx is out of bound!"<<endl;
+            return 0;
+        }
+        return this->data[(chanidx-1)*this->row*this->column+(rowidx-1)*this->column+(colidx-1)];
+    }
+
+    bool operator==(const Mat & mat)
+    {
+        if(this->data==NULL||mat.data==NULL)
+        {
+            cerr<<"The compared matrix has empty data!"<<endl;
+            return false;
+        }
+        if(this->row!=mat.row||this->column!=mat.column||this->channel!=mat.channel)
+        {
+            return false;
+        }
+        for(size_t idx=0;idx<this->row*this->column*this->channel;idx++)
+        {
+            if(this->data[idx]!=mat.data[idx])
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    friend ostream & operator<<(ostream & os,const Mat & mat)
+    {
+        size_t row=mat.row;
+        size_t column=mat.column;
+        size_t channel=mat.channel;
+        if(mat.data==NULL)
+        {
+            cerr<<"Failed to print the empty data!"<<endl;
+            return os;
+        }
+        if(mat.channel==1)
+        {
+            if(mat.row==1)
+            {
+                os<<"[";
+                size_t col=0;
+                for(;col<mat.column-1;col++)
+                {
+                    os<<mat.data[col]<<setprecision(4)<<", ";
+                }
+                os<<mat.data[col]<<setprecision(4)<<"]"<<endl<<endl;
+            }
+            else
+            {
+                os<<"[[";
+                size_t row=0;
+                size_t col=0;
+                for(;row<mat.row-1;row++)
+                {
+                    col=0;
+                    for(;col<mat.column-1;col++){
+                        os<<mat.data[row*mat.column+col]<<setprecision(4)<<", ";
+                    }
+                    os<<mat.data[row*mat.column+col]<<setprecision(4)<<"],"<<endl<<" [";
+                }
+                col=0;
+                for(;col<mat.column-1;col++)
+                {
+                    os<<mat.data[row*mat.column+col]<<setprecision(4)<<", ";
+                }
+                os<<mat.data[row*mat.column+col]<<setprecision(4)<<"]]"<<endl<<endl;
+            }
+        }
+        else
+        {
+            if(mat.row==1)
+            {
+                os<<"[[[";
+                size_t col=0;
+                size_t chan=0;
+                for(;chan<mat.channel-1;chan++)
+                {
+                    for(;col<(chan+1)*mat.column-1;col++)
+                    {
+                        os<<mat.data[col]<<setprecision(4)<<", ";
+                    }
+                    os<<mat.data[col]<<setprecision(4)<<"]],"<<endl<<endl<<" [[";
+                    col++;
+                }
+                for(;col<(chan+1)*mat.column-1;col++)
+                {
+                    os<<mat.data[col]<<setprecision(4)<<", ";
+                }
+                os<<mat.data[col]<<setprecision(4)<<"]]]"<<endl<<endl;
+            }
+            else
+            {
+                os<<"[[[";
+                size_t row=0;
+                size_t col=0;
+                size_t chan=0;
+                for(;chan<mat.channel-1;chan++)
+                {
+                    row=0;
+                    for(;row<mat.row-1;row++)
+                    {
+                        for(;col<chan*mat.row*mat.column+(row+1)*mat.column-1;col++)
+                        {
+                            os<<mat.data[col]<<setprecision(4)<<", ";
+                        }
+                        os<<mat.data[col]<<setprecision(4)<<"],"<<endl<<"  [";
+                        col++;
+                    }
+                    for(;col<chan*mat.row*mat.column+(row+1)*mat.column-1;col++)
+                    {
+                        os<<mat.data[col]<<setprecision(4)<<", ";
+                    }
+                    os<<mat.data[col]<<setprecision(4)<<"]],"<<endl<<endl<<" [[";
+                    col++;
+                }
+                row=0;
+                for(;row<mat.row-1;row++)
+                {
+                    for(;col<chan*mat.row*mat.column+(row+1)*mat.column-1;col++)
+                    {
+                        os<<mat.data[col]<<setprecision(4)<<", ";
+                    }
+                    os<<mat.data[col]<<setprecision(4)<<"],"<<endl<<"  [";
+                    col++;
+                }
+                for(;col<chan*mat.row*mat.column+(row+1)*mat.column-1;col++)
+                {
+                    os<<mat.data[col]<<setprecision(4)<<", ";
+                }
+                os<<mat.data[col]<<setprecision(4)<<"]]]"<<endl<<endl;
+            }
+        }
+        return os;
+    }
+
+    Mat operator+(T scalar)
+    {
+        Mat outcome;
+        if(this->data==NULL)
+        {
+            cerr<<"The data of the matrix is empty!"<<endl;
+            return outcome;
+        }
+        outcome.row=this->row;
+        outcome.column=this->column;
+        outcome.channel=this->channel;
+        delete [] outcome.data;
+        outcome.data=new T[sizeof(T)*this->row*this->column*this->channel];
+        if(outcome.data==NULL)
+        {
+            cerr<<"Failed to allocate memory for the matrix data!"<<endl;
+            return outcome;
+        }
+        for(size_t idx=0;idx<outcome.row*outcome.column*outcome.channel;idx++)
+        {
+            outcome.data[idx]=this->data[idx]+scalar;
+        }
+        return outcome;
+    }
+    
+    friend Mat operator+(T scalar,const Mat & mat)
+    {
+        Mat outcome;
+        if(mat.data==NULL)
+        {
+            cerr<<"The data of the matrix is empty!"<<endl;
+            return outcome;
+        }
+        outcome.row=mat.row;
+        outcome.column=mat.column;
+        outcome.channel=mat.channel;
+        delete [] outcome.data;
+        outcome.data=new T[sizeof(T)*mat.row*mat.column*mat.channel];
+        if(outcome.data==NULL)
+        {
+            cerr<<"Failed to allocate memory for the matrix data!"<<endl;
+            return outcome;
+        }
+        for(size_t idx=0;idx<outcome.row*outcome.column*outcome.channel;idx++)
+        {
+            outcome.data[idx]=scalar+mat.data[idx];
+        }
+        return outcome;
+    }
+
     Mat operator+(const Mat & mat)
     {
         Mat outcome;
@@ -163,6 +324,56 @@ public:
         return outcome;
     }
 
+    Mat operator-(T scalar)
+    {
+        Mat outcome;
+        if(this->data==NULL)
+        {
+            cerr<<"The data of the matrix is empty!"<<endl;
+            return outcome;
+        }
+        outcome.row=this->row;
+        outcome.column=this->column;
+        outcome.channel=this->channel;
+        delete [] outcome.data;
+        outcome.data=new T[sizeof(T)*this->row*this->column*this->channel];
+        if(outcome.data==NULL)
+        {
+            cerr<<"Failed to allocate memory for the matrix data!"<<endl;
+            return outcome;
+        }
+        for(size_t idx=0;idx<outcome.row*outcome.column*outcome.channel;idx++)
+        {
+            outcome.data[idx]=this->data[idx]-scalar;
+        }
+        return outcome;
+    }
+    
+    friend Mat operator-(T scalar,const Mat & mat)
+    {
+        Mat outcome;
+        if(mat.data==NULL)
+        {
+            cerr<<"The data of the matrix is empty!"<<endl;
+            return outcome;
+        }
+        outcome.row=mat.row;
+        outcome.column=mat.column;
+        outcome.channel=mat.channel;
+        delete [] outcome.data;
+        outcome.data=new T[sizeof(T)*mat.row*mat.column*mat.channel];
+        if(outcome.data==NULL)
+        {
+            cerr<<"Failed to allocate memory for the matrix data!"<<endl;
+            return outcome;
+        }
+        for(size_t idx=0;idx<outcome.row*outcome.column*outcome.channel;idx++)
+        {
+            outcome.data[idx]=scalar-mat.data[idx];
+        }
+        return outcome;
+    }
+
     Mat operator-(const Mat & mat)
     {
         Mat outcome;
@@ -199,6 +410,56 @@ public:
         for(size_t idx=0;idx<this->row*this->column*this->channel;idx++)
         {
             outcome.data[idx]=this->data[idx]-mat.data[idx];
+        }
+        return outcome;
+    }
+
+    Mat operator*(T scalar)
+    {
+        Mat outcome;
+        if(this->data==NULL)
+        {
+            cerr<<"The data of the matrix is empty!"<<endl;
+            return outcome;
+        }
+        outcome.row=this->row;
+        outcome.column=this->column;
+        outcome.channel=this->channel;
+        delete [] outcome.data;
+        outcome.data=new T[sizeof(T)*this->row*this->column*this->channel];
+        if(outcome.data==NULL)
+        {
+            cerr<<"Failed to allocate memory for the matrix data!"<<endl;
+            return outcome;
+        }
+        for(size_t idx=0;idx<outcome.row*outcome.column*outcome.channel;idx++)
+        {
+            outcome.data[idx]=this->data[idx]*scalar;
+        }
+        return outcome;
+    }
+
+    friend Mat operator*(T scalar,const Mat & mat)
+    {
+        Mat outcome;
+        if(mat.data==NULL)
+        {
+            cerr<<"The data of the matrix is empty!"<<endl;
+            return outcome;
+        }
+        outcome.row=mat.row;
+        outcome.column=mat.column;
+        outcome.channel=mat.channel;
+        delete [] outcome.data;
+        outcome.data=new T[sizeof(T)*mat.row*mat.column*mat.channel];
+        if(outcome.data==NULL)
+        {
+            cerr<<"Failed to allocate memory for the matrix data!"<<endl;
+            return outcome;
+        }
+        for(size_t idx=0;idx<outcome.row*outcome.column*outcome.channel;idx++)
+        {
+            outcome.data[idx]=mat.data[idx]*scalar;
         }
         return outcome;
     }
@@ -256,117 +517,6 @@ public:
     }
 };
 
-template<typename T>
-bool Mat<T>::printMatrix()
-{
-    size_t row=this->row;
-    size_t column=this->column;
-    size_t channel=this->channel;
-    if(this->data==NULL)
-    {
-        cerr<<"Failed to print the empty data!"<<endl;
-        return false;
-    }
-    if(this->channel==1)
-    {
-        if(this->row==1)
-        {
-            cout<<"[";
-            size_t col=0;
-            for(;col<this->column-1;col++)
-            {
-                cout<<this->data[col]<<setprecision(4)<<", ";
-            }
-            cout<<this->data[col]<<setprecision(4)<<"]"<<endl<<endl;
-        }
-        else
-        {
-            cout<<"[[";
-            size_t row=0;
-            size_t col=0;
-            for(;row<this->row-1;row++)
-            {
-                col=0;
-                for(;col<this->column-1;col++){
-                    cout<<this->data[row*this->column+col]<<setprecision(4)<<", ";
-                }
-                cout<<this->data[row*this->column+col]<<setprecision(4)<<"],"<<endl<<" [";
-            }
-            col=0;
-            for(;col<this->column-1;col++)
-            {
-                cout<<this->data[row*this->column+col]<<setprecision(4)<<", ";
-            }
-            cout<<this->data[row*this->column+col]<<setprecision(4)<<"]]"<<endl<<endl;
-        }
-    }
-    else
-    {
-        if(this->row==1)
-        {
-            cout<<"[[[";
-            size_t col=0;
-            size_t chan=0;
-            for(;chan<this->channel-1;chan++)
-            {
-                for(;col<(chan+1)*this->column-1;col++)
-                {
-                    cout<<this->data[col]<<setprecision(4)<<", ";
-                }
-                cout<<this->data[col]<<setprecision(4)<<"]],"<<endl<<endl<<" [[";
-                col++;
-            }
-            for(;col<(chan+1)*this->column-1;col++)
-            {
-                cout<<this->data[col]<<setprecision(4)<<", ";
-            }
-            cout<<this->data[col]<<setprecision(4)<<"]]]"<<endl<<endl;
-        }
-        else
-        {
-            cout<<"[[[";
-            size_t row=0;
-            size_t col=0;
-            size_t chan=0;
-            for(;chan<this->channel-1;chan++)
-            {
-                row=0;
-                for(;row<this->row-1;row++)
-                {
-                    for(;col<chan*this->row*this->column+(row+1)*this->column-1;col++)
-                    {
-                        cout<<this->data[col]<<setprecision(4)<<", ";
-                    }
-                    cout<<this->data[col]<<setprecision(4)<<"],"<<endl<<"  [";
-                    col++;
-                }
-                for(;col<chan*this->row*this->column+(row+1)*this->column-1;col++)
-                {
-                    cout<<this->data[col]<<setprecision(4)<<", ";
-                }
-                cout<<this->data[col]<<setprecision(4)<<"]],"<<endl<<endl<<" [[";
-                col++;
-            }
-            row=0;
-            for(;row<this->row-1;row++)
-            {
-                for(;col<chan*this->row*this->column+(row+1)*this->column-1;col++)
-                {
-                    cout<<this->data[col]<<setprecision(4)<<", ";
-                }
-                cout<<this->data[col]<<setprecision(4)<<"],"<<endl<<"  [";
-                col++;
-            }
-            for(;col<chan*this->row*this->column+(row+1)*this->column-1;col++)
-            {
-                cout<<this->data[col]<<setprecision(4)<<", ";
-            }
-            cout<<this->data[col]<<setprecision(4)<<"]]]"<<endl<<endl;
-        }
-    }
-    return true;
-}
-
 template class Mat<unsigned>;
 template class Mat<char>;
 template class Mat<short>;
@@ -374,3 +524,6 @@ template class Mat<int>;
 template class Mat<float>;
 template class Mat<double>;
 #endif
+
+
+
